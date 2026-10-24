@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+int main()
+{
+    int lines, n, block, i, j, line;
+    int cache[50];
+
+    printf("Enter number of cache lines: ");
+    scanf("%d", &lines);
+
+    for (i = 0; i < lines; i++)
+        cache[i] = -1;
+
+    printf("Enter number of memory block accesses: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++)
+    {
+        printf("\nEnter memory block number: ");
+        scanf("%d", &block);
+
+        line = block % lines;
+        printf("Block %d maps to cache line %d\n", block, line);
+
+        if (cache[line] == block)
+        {
+            printf("Cache Hit\n");
+        }
+        else
+        {
+            printf("Cache Miss\n");
+            cache[line] = block;
+        }
+
+        printf("Cache contents:\n");
+        for (j = 0; j < lines; j++)
+        {
+            if (cache[j] == -1)
+                printf("Line %d : Empty\n", j);
+            else
+                printf("Line %d : Block %d\n", j, cache[j]);
+        }
+    }
+
+    return 0;   
