@@ -1,0 +1,60 @@
+include 'emu8086.inc'
+.stack 100h
+.model small
+.data
+    data1 db 0FH                ; first 8-bit data  = 15
+    data2 db 04H                ; second 8-bit data = 4
+.code
+    main proc
+        mov ax,@data            ; step 2: initialize data segment
+        mov ds,ax
+
+        mov al,data1            ; step 3: first data into AL
+        mov bl,data2            ; step 4: second data into BL
+
+        ; ---------- ADDITION ----------
+        print 'Addition       = '
+        add al,bl               ; ADD AL, BL
+        mov ah,0
+        call print_num
+        printn ''
+
+        ; ---------- SUBTRACTION ----------
+        print 'Subtraction    = '
+        mov al,data1
+        sub al,bl               ; SUB AL, BL
+        mov ah,0
+        call print_num
+        printn ''
+
+        ; ---------- MULTIPLICATION ----------
+        print 'Multiplication = '
+        mov al,data1            ; MOV AL, data1
+        mul bl                  ; MUL BL  (AX = AL * BL)
+        call print_num
+        printn ''
+
+        ; ---------- DIVISION ----------
+        mov ah,0
+        mov al,data1            ; MOV AX, data1
+        div bl                  ; DIV BL: AL = quotient, AH = remainder
+        mov cl,ah               ; save remainder
+
+        print 'Quotient       = '
+        mov ah,0
+        call print_num
+        printn ''
+
+        print 'Remainder      = '
+        mov al,cl
+        mov ah,0
+        call print_num
+
+        mov ah,4ch              ; step 7: stop the program
+        int 21h
+    main endp
+
+    define_print_num
+    define_print_num_uns
+
+end main
