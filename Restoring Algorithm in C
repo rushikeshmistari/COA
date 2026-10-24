@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+int main()
+{
+    int A = 0, Q, M, n = 8;
+    int i;
+
+    printf("Enter dividend (0-255): ");
+    scanf("%d", &Q);
+    printf("Enter divisor  (1-255): ");
+    scanf("%d", &M);
+
+    if (M == 0)
+    {
+        printf("Division by zero is not possible\n");
+        return 0;
+    }
+
+    int dividend = Q;              
+
+    for (i = 0; i < n; i++)
+    {
+        /* a. left shift [A, Q] */
+        A = (A << 1) | ((Q >> 7) & 1);   
+        Q = (Q << 1) & 0xFF;          
+
+        A = A - M;
+
+        /* c. check sign of A */
+        if (A < 0)
+        {
+            A = A + M;            
+            Q = Q | 0;             
+        }
+        else
+        {
+            Q = Q | 1;               
+        }
+    }
+
+    printf("\n%d / %d\n", dividend, M);
+    printf("Quotient  = %d\n", Q);
+    printf("Remainder = %d\n", A);
+
+    return 0;
+}
