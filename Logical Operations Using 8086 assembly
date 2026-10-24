@@ -1,0 +1,110 @@
+include 'emu8086.inc'
+.stack 100h
+.model small
+.data
+    data1 db 92h                ; first 8-bit data  = 10010010
+    data2 db 6Ah                ; second 8-bit data = 01101010
+.code
+    main proc
+        mov ax,@data            ; step 2: initialize data segment
+        mov ds,ax
+
+        mov al,data1            ; step 3: first data into AL
+        mov bl,data2            ;         second data into BL
+
+        ; ---------- AND ----------
+        print 'AND AL,BL = '
+        and al,bl               ; step 4: AND AL, BL
+        call show_bin
+        print '  '
+        call show_hex
+        printn ''
+
+        ; ---------- OR ----------
+        mov al,data1
+        print 'OR  AL,BL = '
+        or al,bl                ; OR AL, BL
+        call show_bin
+        print '  '
+        call show_hex
+        printn ''
+
+        ; ---------- XOR ----------
+        mov al,data1
+        print 'XOR AL,BL = '
+        xor al,bl               ; XOR AL, BL
+        call show_bin
+        print '  '
+        call show_hex
+        printn ''
+
+        ; ---------- NOT ----------
+        mov al,data1
+        print 'NOT AL    = '
+        not al                  ; NOT AL
+        call show_bin
+        print '  '
+        call show_hex
+        printn ''
+
+        mov ah,4ch              ; step 6: stop the program
+        int 21h
+    main endp
+
+    ; ---------- prints AL in binary (8 digits) ----------
+    show_bin proc
+        push ax
+        push cx
+        push dx
+        mov cx,8
+        mov dh,al
+    next_bit:
+        mov dl,'0'
+        shl dh,1
+        jnc zero
+        mov dl,'1'
+    zero:
+        mov ah,02h
+        int 21h
+        loop next_bit
+        pop dx
+        pop cx
+        pop ax
+        ret
+    show_bin endp
+
+    ; ---------- prints AL as two hex digits ----------
+    show_hex proc
+        push ax
+        push cx
+        push dx
+        mov dh,al
+        mov cl,4
+        shr al,cl
+        call hex_digit
+        mov al,dh
+        and al,0Fh
+        call hex_digit
+        mov dl,'H'
+        mov ah,02h
+        int 21h
+        pop dx
+        pop cx
+        pop ax
+        ret
+    show_hex endp
+
+    ; ---------- prints one hex digit (0 to 15 in AL) ----------
+    hex_digit proc
+        cmp al,9
+        jbe is_number
+        add al,7
+    is_number:
+        add al,48
+        mov dl,al
+        mov ah,02h
+        int 21h
+        ret
+    hex_digit endp
+
+end main
