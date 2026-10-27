@@ -1,31 +1,30 @@
-.MODEL SMALL 
-.STACK 100H 
-.CODE 
-MAIN PROC 
-MOV AX,0012H 
-INT 10H 
-MOV AH,0CH 
-MOV AL,0FH 
-MOV CX,100 
-L1: MOV DX,100 
-INT 10H 
-INC CX 
-CMP CX,200 
-JNE L1 
-MOV CX,100 
-L2: MOV DX,100 
-L3: INT 10H 
-INC DX 
-CMP DX,200 
-JNE L3 
-INC CX 
-CMP CX,200 
-JNE L2 
-MOV AH,00H 
-INT 16H 
-MOV AX,0003H 
-INT 10H 
-MOV AH,4CH 
-INT 21H 
-MAIN ENDP 
-END MAIN
+.model small
+.stack 100h
+.code
+main:
+        mov  ax, 0013h          
+        int  10h
+
+        mov  ax, 0A000h         
+        mov  es, ax
+        cld
+        mov  di, 60*320+100     ; 
+        mov  dx, 80             ; 
+row:
+        push di
+        mov  cx, 120            ; 
+        mov  al, 4              ; 
+        rep  stosb              ; 
+        pop  di
+        add  di, 320            ; 
+        dec  dx
+        jnz  row
+
+        mov  ah, 00h            ;
+        int  16h
+
+        mov  ax, 0003h          ; 
+        int  10h
+        mov  ax, 4C00h          ; 
+        int  21h
+end main
